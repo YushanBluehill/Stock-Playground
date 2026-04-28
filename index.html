@@ -74,6 +74,20 @@
   }
   .fetch-btn:active { background: #0e7490; }
   .fetch-btn:disabled { background: #93c5fd; cursor: not-allowed; }
+  .cache-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; background: #f0fdf4; border: 1px solid #86efac;
+    border-radius: 6px; font-size: 11px; color: #166534;
+    margin-top: 10px;
+  }
+  .cache-bar.stale {
+    background: #fef3c7; border-color: #fcd34d; color: #92400e;
+  }
+  .clear-cache-btn {
+    background: transparent; border: none; color: inherit;
+    font-size: 11px; text-decoration: underline; cursor: pointer;
+    font-family: inherit; padding: 0;
+  }
   .tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
   .tab {
     padding: 7px 14px; background: #f0f0f0; color: #555;
@@ -132,8 +146,8 @@
 </head>
 <body>
 <div class="container">
-  <h1>我的资讯驾驶舱<span class="version-tag">v7 双API</span></h1>
-  <div class="subtitle">持仓 + 财经新闻 + 一键翻译要点</div>
+  <h1>我的资讯驾驶舱<span class="version-tag">v8 缓存版</span></h1>
+  <div class="subtitle">持仓 + 财经新闻 + 自动缓存(关闭后再开还在)</div>
 
   <div class="card">
     <div class="section-title">💼 持仓总览</div>
@@ -150,7 +164,7 @@
 
     <div class="api-key-block">
       <div class="api-key-label">
-        <span>Marketaux API Token(财经新闻,优先)</span>
+        <span>Marketaux API Token</span>
         <span class="priority-badge">主</span>
       </div>
       <div class="api-key-row">
@@ -164,19 +178,17 @@
 
     <div class="api-key-block">
       <div class="api-key-label">
-        <span>GNews API Key(综合新闻,备用)</span>
+        <span>GNews API Key(备用)</span>
         <span class="priority-badge" style="background:#fef3c7; color:#92400e;">备</span>
       </div>
       <div class="api-key-row">
         <input type="password" class="api-key-input" id="gnewsKey" placeholder="粘贴你的 GNews Key">
         <button class="save-btn" onclick="saveKey('gnews')">保存</button>
       </div>
-      <div class="api-key-hint">
-        Marketaux 失败时尝试 GNews
-      </div>
     </div>
 
     <button class="fetch-btn" id="fetchBtn" onclick="fetchAllNews()">🔄 获取最新新闻</button>
+    <div id="cacheInfo"></div>
     <div id="statusMsg"></div>
   </div>
 
@@ -203,8 +215,8 @@ let holdings = [
 ];
 let news = [];
 let currentFilter = 'all';
+let lastFetchTime = null;
 
-// Marketaux 用 symbols 直接查公司,GNews 用关键词
 const marketauxQueries = {
   portfolio: { symbols: 'AMD,ARM,TSM' },
   oil: { search: 'oil OR OPEC' },
@@ -242,11 +254,77 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// === 缓存管理 ===
+function saveNewsCache() {
+  try {
+    localStorage.setItem('cached_news', JSON.stringify(news));
+    localStorage.setItem('cached_news_time', String(Date.now()));
+    lastFetchTime = Date.now();
+    renderCacheInfo();
+  } catch (e) {
+    console.warn('缓存失败:', e);
+  }
+}
+
+function loadNewsCache() {
+  try {
+    const cached = localStorage.getItem('cached_news');
+    const time = localStorage.getItem('cached_news_time');
+    if (cached && time) {
+      news = JSON.parse(cached);
+      lastFetchTime = parseInt(time, 10);
+      return true;
+    }
+  } catch (e) {
+    console.warn('加载缓存失败:', e);
+  }
+  return false;
+}
+
+function clearNewsCache() {
+  if (!confirm('确认清除缓存的新闻?')) return;
+  localStorage.removeItem('cached_news');
+  localStorage.removeItem('cached_news_time');
+  news = [];
+  lastFetchTime = null;
+  renderNews();
+  renderCacheInfo();
+  showStatus('✅ 缓存已清除', 'success');
+  setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 3000);
+}
+
+function renderCacheInfo() {
+  const el = document.getElementById('cacheInfo');
+  if (!lastFetchTime || news.length === 0) {
+    el.innerHTML = '';
+    return;
+  }
+  const ageMs = Date.now() - lastFetchTime;
+  const ageHours = ageMs / 3600000;
+  const isStale = ageHours > 24;
+
+  const ageText = ageHours < 1
+    ? Math.floor(ageMs / 60000) + ' 分钟前'
+    : Math.floor(ageHours) + ' 小时前';
+
+  el.innerHTML = `
+    <div class="cache-bar ${isStale ? 'stale' : ''}">
+      <span>${isStale ? '⚠️' : '💾'} 缓存 ${news.length} 条新闻 · ${ageText}更新</span>
+      <button class="clear-cache-btn" onclick="clearNewsCache()">清除</button>
+    </div>`;
+}
+
 window.addEventListener('load', () => {
   const m = localStorage.getItem('marketaux_key');
   const g = localStorage.getItem('gnews_key');
   if (m) document.getElementById('marketauxKey').value = m;
   if (g) document.getElementById('gnewsKey').value = g;
+
+  // 加载缓存的新闻
+  if (loadNewsCache()) {
+    renderNews();
+    renderCacheInfo();
+  }
 });
 
 function saveKey(type) {
@@ -277,21 +355,14 @@ function renderHoldings() {
   document.getElementById('totalPnl').className = 'stat-value ' + (totalPnl >= 0 ? 'green' : 'red');
 }
 
-// === Marketaux fetch ===
 async function fetchFromMarketaux(category, params, apiKey) {
   let url = `https://api.marketaux.com/v1/news/all?language=en&limit=3&api_token=${apiKey}`;
   if (params.symbols) url += `&symbols=${params.symbols}`;
   if (params.search) url += `&search=${encodeURIComponent(params.search)}`;
-
   const res = await fetch(url);
   const data = await res.json();
-
-  if (data.error) {
-    throw new Error(`${data.error.code || 'error'}: ${data.error.message || JSON.stringify(data.error)}`);
-  }
-  if (!data.data || !Array.isArray(data.data)) {
-    throw new Error('返回格式异常');
-  }
+  if (data.error) throw new Error(`${data.error.code || 'error'}: ${data.error.message || JSON.stringify(data.error)}`);
+  if (!data.data || !Array.isArray(data.data)) throw new Error('返回格式异常');
   return data.data.map(a => ({
     id: Date.now() + Math.random(),
     title: a.title,
@@ -303,7 +374,6 @@ async function fetchFromMarketaux(category, params, apiKey) {
   }));
 }
 
-// === GNews fetch ===
 async function fetchFromGNews(category, query, apiKey) {
   const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=3&apikey=${apiKey}`;
   const res = await fetch(url);
@@ -312,9 +382,7 @@ async function fetchFromGNews(category, query, apiKey) {
     const errMsg = Array.isArray(data.errors) ? data.errors.join(', ') : JSON.stringify(data.errors);
     throw new Error(errMsg);
   }
-  if (!data.articles || !Array.isArray(data.articles)) {
-    throw new Error('返回格式异常');
-  }
+  if (!data.articles || !Array.isArray(data.articles)) throw new Error('返回格式异常');
   return data.articles.map(a => ({
     id: Date.now() + Math.random(),
     title: a.title,
@@ -326,7 +394,6 @@ async function fetchFromGNews(category, query, apiKey) {
   }));
 }
 
-// === 主流程 ===
 async function fetchAllNews() {
   const marketauxKey = document.getElementById('marketauxKey').value.trim();
   const gnewsKey = document.getElementById('gnewsKey').value.trim();
@@ -338,72 +405,58 @@ async function fetchAllNews() {
 
   const btn = document.getElementById('fetchBtn');
   btn.disabled = true;
-
   const log = [];
-  const addLog = (line) => { log.push(line); console.log(line); };
 
   let allNews = [];
 
-  // === 阶段 1: 尝试 Marketaux ===
+  // 先尝试 Marketaux
   if (marketauxKey) {
-    addLog('🚀 开始尝试 Marketaux...');
     showStatus('正在尝试 Marketaux...', 'info');
-
     const categories = Object.entries(marketauxQueries);
-    let marketauxSuccess = 0;
-
+    let success = 0;
     for (let i = 0; i < categories.length; i++) {
       const [category, params] = categories[i];
       const label = { portfolio: '持仓', oil: '油价', war: '战况', ai: 'AI' }[category];
-      btn.textContent = `⏳ Marketaux ${i+1}/${categories.length}: ${label}`;
-
+      btn.textContent = `⏳ Marketaux ${i+1}/4: ${label}`;
       try {
         const articles = await fetchFromMarketaux(category, params, marketauxKey);
         allNews = allNews.concat(articles);
-        marketauxSuccess++;
-        addLog(`✅ Marketaux [${label}]: ${articles.length} 条`);
+        success++;
+        log.push(`✅ Marketaux [${label}]: ${articles.length} 条`);
         news = allNews;
         renderNews();
       } catch (e) {
-        addLog(`❌ Marketaux [${label}]: ${e.message}`);
+        log.push(`❌ Marketaux [${label}]: ${e.message}`);
       }
-
       if (i < categories.length - 1) await new Promise(r => setTimeout(r, 1000));
     }
-
-    addLog(`📊 Marketaux 共获取 ${allNews.length} 条`);
-
-    if (marketauxSuccess > 0) {
+    if (success > 0) {
       btn.disabled = false;
       btn.textContent = '🔄 获取最新新闻';
-      showStatus(`✅ Marketaux 成功 · 获取 ${allNews.length} 条新闻`, 'success');
+      saveNewsCache();  // 💾 保存到缓存
+      showStatus(`✅ Marketaux 成功 · 获取 ${allNews.length} 条新闻 · 已缓存`, 'success');
       setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 5000);
       return;
     }
-
-    addLog('⚠️ Marketaux 全部失败,尝试 GNews...');
   }
 
-  // === 阶段 2: 尝试 GNews(仅在 Marketaux 失败时)===
+  // Marketaux 失败,尝试 GNews
   if (gnewsKey) {
     showStatus('Marketaux 失败,尝试 GNews...', 'info');
     const categories = Object.entries(gnewsQueries);
-
     for (let i = 0; i < categories.length; i++) {
       const [category, query] = categories[i];
       const label = { portfolio: '持仓', oil: '油价', war: '战况', ai: 'AI' }[category];
-      btn.textContent = `⏳ GNews ${i+1}/${categories.length}: ${label}`;
-
+      btn.textContent = `⏳ GNews ${i+1}/4: ${label}`;
       try {
         const articles = await fetchFromGNews(category, query, gnewsKey);
         allNews = allNews.concat(articles);
-        addLog(`✅ GNews [${label}]: ${articles.length} 条`);
+        log.push(`✅ GNews [${label}]: ${articles.length} 条`);
         news = allNews;
         renderNews();
       } catch (e) {
-        addLog(`❌ GNews [${label}]: ${e.message}`);
+        log.push(`❌ GNews [${label}]: ${e.message}`);
       }
-
       if (i < categories.length - 1) await new Promise(r => setTimeout(r, 1500));
     }
   }
@@ -412,9 +465,10 @@ async function fetchAllNews() {
   btn.textContent = '🔄 获取最新新闻';
 
   if (allNews.length === 0) {
-    showStatus(`❌ 全部失败 · 诊断如下:<div class="diagnostic">${log.join('\n')}</div>`, 'error');
+    showStatus(`❌ 全部失败<div class="diagnostic">${log.join('\n')}</div>`, 'error');
   } else {
-    showStatus(`⚠️ 部分成功 · 获取 ${allNews.length} 条 · 诊断:<div class="diagnostic">${log.join('\n')}</div>`, 'warn');
+    saveNewsCache();  // 💾 保存到缓存
+    showStatus(`⚠️ 部分成功 · ${allNews.length} 条 · 已缓存<div class="diagnostic">${log.join('\n')}</div>`, 'warn');
   }
 }
 
