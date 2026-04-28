@@ -59,7 +59,6 @@
   .cat-oil { background: #fed7aa; color: #92400e; }
   .cat-war { background: #fee2e2; color: #991b1b; }
   .cat-ai { background: #e9d5ff; color: #6b21a8; }
-  .cat-reddit { background: #ffedd5; color: #9a3412; }
   .cat-hn { background: #fde68a; color: #78350f; }
   .news-title { font-size: 15px; font-weight: 500; line-height: 1.4; margin-bottom: 6px; }
   .news-meta { font-size: 11px; color: #888; margin-bottom: 10px; }
@@ -75,12 +74,20 @@
   .status-msg.info { background: #dbeafe; color: #1e40af; }
   .status-msg.warn { background: #fef3c7; color: #92400e; }
   .diagnostic { font-size: 11px; font-family: monospace; background: #1f2937; color: #d1fae5; padding: 10px; border-radius: 6px; margin-top: 8px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+  .ask-claude-cta {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 1px solid #f59e0b;
+    padding: 12px 14px; border-radius: 8px; font-size: 12px;
+    color: #78350f; line-height: 1.6;
+    margin-top: 14px;
+  }
+  .ask-claude-cta strong { color: #92400e; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>我的资讯驾驶舱<span class="version-tag">v11 全网最新</span></h1>
-  <div class="subtitle">财经新闻 + Reddit 散户 + HackerNews 极客 · 近 3 天</div>
+  <h1>我的资讯驾驶舱<span class="version-tag">v12 终结版</span></h1>
+  <div class="subtitle">财经新闻 + HackerNews 极客 · 近 3 天 · 散户情绪交给 Claude</div>
 
   <div class="card">
     <div class="section-title">💼 持仓总览</div>
@@ -119,12 +126,17 @@
     </div>
 
     <div class="free-source-info">
-      ✅ Reddit(经 corsproxy.io 代理)和 HackerNews <strong>完全免费</strong>,无需 Key
+      ✅ HackerNews <strong>完全免费</strong>,无需 Key,8 个搜索词覆盖 AI / 芯片 / 财经
     </div>
 
     <button class="fetch-btn" id="fetchBtn" onclick="fetchAllNews()">🔄 获取最新新闻</button>
     <div id="cacheInfo"></div>
     <div id="statusMsg"></div>
+
+    <div class="ask-claude-cta">
+      💡 <strong>想看散户情绪 / Twitter / 大佬观点?</strong><br>
+      直接来 Claude 这里说"今天 wallstreetbets 在炒什么"或"Lisa Su 最近怎么说",我会用 web search 给你实时整理。
+    </div>
   </div>
 
   <div class="card">
@@ -135,7 +147,6 @@
       <button class="tab" onclick="setFilter('oil', event)">🛢️ 油价</button>
       <button class="tab" onclick="setFilter('war', event)">⚔️ 战况</button>
       <button class="tab" onclick="setFilter('ai', event)">🤖 AI</button>
-      <button class="tab" onclick="setFilter('reddit', event)">🔥 散户</button>
       <button class="tab" onclick="setFilter('hn', event)">💻 极客</button>
     </div>
     <div id="newsList"></div>
@@ -155,9 +166,6 @@ let currentFilter = 'all';
 let lastFetchTime = null;
 
 const DAYS_BACK = 3;
-
-// === v11 关键改动:CORS 代理 ===
-const CORS_PROXY = 'https://corsproxy.io/?url=';
 
 function getRecentDate(daysAgo = DAYS_BACK) {
   const d = new Date();
@@ -191,16 +199,16 @@ const gnewsQueries = {
   ]
 };
 
-const redditSubs = ['wallstreetbets', 'AMD_Stock', 'singularity', 'LocalLLaMA'];
-
-// === v11 改动:HackerNews 加强,6 个搜索词 ===
+// === v12: HackerNews 加强到 8 个搜索词 ===
 const hnQueries = [
   'AI OR LLM',
   'AMD OR EPYC OR MI300',
   'Nvidia OR TSMC OR ARM',
   'OpenAI OR Anthropic OR Claude',
   'chip OR semiconductor',
-  'stocks OR trading OR market'
+  'stocks OR trading OR market',
+  'agent OR agentic',
+  'datacenter OR GPU'
 ];
 
 function fmt(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -353,36 +361,10 @@ async function fetchFromGNews(category, query, apiKey) {
   }));
 }
 
-// === v11 关键改动:Reddit 通过 CORS 代理 ===
-async function fetchFromReddit(sub) {
-  const targetUrl = `https://www.reddit.com/r/${sub}/hot.json?limit=15`;
-  const url = CORS_PROXY + encodeURIComponent(targetUrl);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  if (!data.data || !data.data.children) throw new Error('返回格式异常');
-
-  const cutoff = getRecentTimestamp();
-  return data.data.children
-    .map(c => c.data)
-    .filter(p => p.created_utc >= cutoff && !p.stickied)
-    .slice(0, 5)
-    .map(p => ({
-      id: p.id,
-      title: p.title,
-      description: p.selftext ? p.selftext.slice(0, 280) : '',
-      category: 'reddit',
-      source: `r/${sub} · ${p.score} ups · ${p.num_comments} 评论`,
-      timestamp: p.created_utc * 1000,
-      url: `https://reddit.com${p.permalink}`
-    }));
-}
-
-// === v11 改动:HackerNews 加强 ===
+// === v12: HackerNews 每次拿 10 条 ===
 async function fetchFromHN(query) {
   const cutoff = getRecentTimestamp();
-  // 加 hitsPerPage=8(原 5),并加 sortBy 默认就是 created_at_i 倒序在 numericFilters 配合下
-  const url = `https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(query)}&tags=story&numericFilters=created_at_i>${cutoff}&hitsPerPage=8`;
+  const url = `https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(query)}&tags=story&numericFilters=created_at_i>${cutoff}&hitsPerPage=10`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();
@@ -417,7 +399,7 @@ async function fetchAllNews() {
   const log = [];
   let allNews = [];
 
-  // === 阶段 1: Marketaux ===
+  // === Marketaux ===
   if (marketauxKey) {
     showStatus('正在获取财经新闻...', 'info');
     let success = 0;
@@ -472,23 +454,7 @@ async function fetchAllNews() {
     }
   }
 
-  // === 阶段 2: Reddit(经 CORS 代理)===
-  showStatus('正在获取 Reddit 散户讨论(经代理)...', 'info');
-  for (let i = 0; i < redditSubs.length; i++) {
-    const sub = redditSubs[i];
-    btn.textContent = `⏳ Reddit ${i+1}/${redditSubs.length}: r/${sub}`;
-    try {
-      const posts = await fetchFromReddit(sub);
-      allNews = allNews.concat(posts);
-      news = allNews;
-      renderNews();
-    } catch (e) {
-      log.push(`❌ Reddit [r/${sub}]: ${e.message}`);
-    }
-    if (i < redditSubs.length - 1) await new Promise(r => setTimeout(r, 600));
-  }
-
-  // === 阶段 3: HackerNews(加强,6 个搜索)===
+  // === HackerNews(8 个搜索)===
   showStatus('正在获取 HackerNews 极客讨论...', 'info');
   let hnArticles = [];
   for (let i = 0; i < hnQueries.length; i++) {
@@ -552,7 +518,7 @@ function renderNews() {
 }
 
 function categoryLabel(c) {
-  return { portfolio: '💼 持仓', oil: '🛢️ 油价', war: '⚔️ 战况', ai: '🤖 AI', reddit: '🔥 散户', hn: '💻 极客' }[c] || c;
+  return { portfolio: '💼 持仓', oil: '🛢️ 油价', war: '⚔️ 战况', ai: '🤖 AI', hn: '💻 极客' }[c] || c;
 }
 
 function translateNews(id) {
