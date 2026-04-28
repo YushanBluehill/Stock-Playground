@@ -45,7 +45,15 @@
   .h-price.red, .h-pnl.red { color: #ef4444; }
   .api-key-block {
     background: #f9fafb; border-radius: 8px; padding: 12px;
-    margin-bottom: 12px; border: 1px solid #e5e7eb;
+    margin-bottom: 10px; border: 1px solid #e5e7eb;
+  }
+  .api-key-label {
+    font-size: 12px; font-weight: 500; color: #555; margin-bottom: 6px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .priority-badge {
+    font-size: 9px; padding: 2px 6px; border-radius: 3px;
+    background: #dcfce7; color: #166534; font-weight: 600;
   }
   .api-key-row { display: flex; gap: 6px; align-items: center; }
   .api-key-input {
@@ -108,22 +116,24 @@
   .toast.show { opacity: 1; }
   .status-msg {
     font-size: 12px; padding: 10px 12px; border-radius: 6px; margin: 12px 0;
+    line-height: 1.5;
   }
   .status-msg.success { background: #d1fae5; color: #065f46; }
   .status-msg.error { background: #fee2e2; color: #991b1b; }
   .status-msg.info { background: #dbeafe; color: #1e40af; }
   .status-msg.warn { background: #fef3c7; color: #92400e; }
-  .delay-notice {
-    background: #fef3c7; color: #92400e; padding: 8px 10px;
-    border-radius: 6px; font-size: 11px; margin-bottom: 12px;
+  .diagnostic {
+    font-size: 11px; font-family: monospace; background: #1f2937;
+    color: #d1fae5; padding: 10px; border-radius: 6px;
+    margin-top: 8px; white-space: pre-wrap; word-break: break-all;
     line-height: 1.5;
   }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>我的资讯驾驶舱<span class="version-tag">v6 限速修复</span></h1>
-  <div class="subtitle">持仓 + 自动获取英文新闻 + 一键翻译要点</div>
+  <h1>我的资讯驾驶舱<span class="version-tag">v7 双API</span></h1>
+  <div class="subtitle">持仓 + 财经新闻 + 一键翻译要点</div>
 
   <div class="card">
     <div class="section-title">💼 持仓总览</div>
@@ -136,20 +146,36 @@
   </div>
 
   <div class="card">
-    <div class="section-title">🔑 GNews API Key</div>
+    <div class="section-title">🔑 新闻 API 设置</div>
+
     <div class="api-key-block">
+      <div class="api-key-label">
+        <span>Marketaux API Token(财经新闻,优先)</span>
+        <span class="priority-badge">主</span>
+      </div>
       <div class="api-key-row">
-        <input type="password" class="api-key-input" id="gnewsKey" placeholder="粘贴你的 GNews API Key">
-        <button class="save-btn" onclick="saveKey()">保存</button>
+        <input type="password" class="api-key-input" id="marketauxKey" placeholder="粘贴你的 Marketaux Token">
+        <button class="save-btn" onclick="saveKey('marketaux')">保存</button>
       </div>
       <div class="api-key-hint">
-        没有?去 <a href="https://gnews.io/register" target="_blank">gnews.io/register</a> 免费申请
+        没有?<a href="https://www.marketaux.com/account/dashboard" target="_blank">marketaux.com</a> 免费注册
       </div>
     </div>
-    <div class="delay-notice">
-      ⚠️ GNews 免费版数据有 <strong>12 小时延迟</strong> · 实时数据需付费版<br>
-      ⏳ 获取需要 ~6 秒(避免触发限速)· 失败时建议等 5 分钟再试
+
+    <div class="api-key-block">
+      <div class="api-key-label">
+        <span>GNews API Key(综合新闻,备用)</span>
+        <span class="priority-badge" style="background:#fef3c7; color:#92400e;">备</span>
+      </div>
+      <div class="api-key-row">
+        <input type="password" class="api-key-input" id="gnewsKey" placeholder="粘贴你的 GNews Key">
+        <button class="save-btn" onclick="saveKey('gnews')">保存</button>
+      </div>
+      <div class="api-key-hint">
+        Marketaux 失败时尝试 GNews
+      </div>
     </div>
+
     <button class="fetch-btn" id="fetchBtn" onclick="fetchAllNews()">🔄 获取最新新闻</button>
     <div id="statusMsg"></div>
   </div>
@@ -178,15 +204,20 @@ let holdings = [
 let news = [];
 let currentFilter = 'all';
 
-const queries = {
+// Marketaux 用 symbols 直接查公司,GNews 用关键词
+const marketauxQueries = {
+  portfolio: { symbols: 'AMD,ARM,TSM' },
+  oil: { search: 'oil OR OPEC' },
+  war: { search: 'Ukraine OR Israel OR conflict' },
+  ai: { search: 'OpenAI OR Anthropic OR "AI agent"' }
+};
+
+const gnewsQueries = {
   portfolio: 'AMD OR "ARM Holdings" OR TSMC',
   oil: 'oil price OR OPEC',
   war: 'Ukraine OR "Middle East" OR Israel',
   ai: 'OpenAI OR Anthropic OR "AI agent"'
 };
-
-const RATE_LIMIT_DELAY = 1500;  // 每次请求间隔 1.5 秒
-const MAX_PER_CATEGORY = 3;     // 每类只取 3 条
 
 function fmt(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
@@ -200,10 +231,9 @@ function timeAgo(ts) {
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
-function showStatus(msg, type) {
+function showStatus(html, type) {
   const el = document.getElementById('statusMsg');
-  el.innerHTML = `<div class="status-msg ${type}">${msg}</div>`;
-  if (type === 'success') setTimeout(() => { el.innerHTML = ''; }, 5000);
+  el.innerHTML = `<div class="status-msg ${type}">${html}</div>`;
 }
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -213,15 +243,20 @@ function showToast(msg) {
 }
 
 window.addEventListener('load', () => {
-  const k = localStorage.getItem('gnews_key');
-  if (k) document.getElementById('gnewsKey').value = k;
+  const m = localStorage.getItem('marketaux_key');
+  const g = localStorage.getItem('gnews_key');
+  if (m) document.getElementById('marketauxKey').value = m;
+  if (g) document.getElementById('gnewsKey').value = g;
 });
 
-function saveKey() {
-  const k = document.getElementById('gnewsKey').value.trim();
+function saveKey(type) {
+  const id = type === 'marketaux' ? 'marketauxKey' : 'gnewsKey';
+  const storeKey = type === 'marketaux' ? 'marketaux_key' : 'gnews_key';
+  const k = document.getElementById(id).value.trim();
   if (!k) { showStatus('❌ 请先输入 Key', 'error'); return; }
-  localStorage.setItem('gnews_key', k);
-  showStatus('✅ Key 已保存', 'success');
+  localStorage.setItem(storeKey, k);
+  showStatus(`✅ ${type === 'marketaux' ? 'Marketaux' : 'GNews'} Key 已保存`, 'success');
+  setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 3000);
 }
 
 function renderHoldings() {
@@ -242,8 +277,35 @@ function renderHoldings() {
   document.getElementById('totalPnl').className = 'stat-value ' + (totalPnl >= 0 ? 'green' : 'red');
 }
 
-async function fetchOneCategory(category, query, apiKey) {
-  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=${MAX_PER_CATEGORY}&apikey=${apiKey}`;
+// === Marketaux fetch ===
+async function fetchFromMarketaux(category, params, apiKey) {
+  let url = `https://api.marketaux.com/v1/news/all?language=en&limit=3&api_token=${apiKey}`;
+  if (params.symbols) url += `&symbols=${params.symbols}`;
+  if (params.search) url += `&search=${encodeURIComponent(params.search)}`;
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  if (data.error) {
+    throw new Error(`${data.error.code || 'error'}: ${data.error.message || JSON.stringify(data.error)}`);
+  }
+  if (!data.data || !Array.isArray(data.data)) {
+    throw new Error('返回格式异常');
+  }
+  return data.data.map(a => ({
+    id: Date.now() + Math.random(),
+    title: a.title,
+    description: a.description || a.snippet,
+    category,
+    source: a.source || 'Marketaux',
+    timestamp: new Date(a.published_at).getTime(),
+    url: a.url
+  }));
+}
+
+// === GNews fetch ===
+async function fetchFromGNews(category, query, apiKey) {
+  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=3&apikey=${apiKey}`;
   const res = await fetch(url);
   const data = await res.json();
   if (data.errors) {
@@ -251,7 +313,7 @@ async function fetchOneCategory(category, query, apiKey) {
     throw new Error(errMsg);
   }
   if (!data.articles || !Array.isArray(data.articles)) {
-    throw new Error('没有返回文章');
+    throw new Error('返回格式异常');
   }
   return data.articles.map(a => ({
     id: Date.now() + Math.random(),
@@ -264,35 +326,85 @@ async function fetchOneCategory(category, query, apiKey) {
   }));
 }
 
+// === 主流程 ===
 async function fetchAllNews() {
-  const apiKey = document.getElementById('gnewsKey').value.trim();
-  if (!apiKey) { showStatus('❌ 请先输入并保存 Key', 'error'); return; }
+  const marketauxKey = document.getElementById('marketauxKey').value.trim();
+  const gnewsKey = document.getElementById('gnewsKey').value.trim();
+
+  if (!marketauxKey && !gnewsKey) {
+    showStatus('❌ 请至少填一个 API Key', 'error');
+    return;
+  }
+
   const btn = document.getElementById('fetchBtn');
   btn.disabled = true;
 
+  const log = [];
+  const addLog = (line) => { log.push(line); console.log(line); };
+
   let allNews = [];
-  let realErrors = [];
-  const categories = Object.entries(queries);
 
-  for (let i = 0; i < categories.length; i++) {
-    const [category, query] = categories[i];
-    const label = { portfolio: '持仓', oil: '油价', war: '战况', ai: 'AI' }[category];
-    btn.textContent = `⏳ ${i+1}/${categories.length}: ${label}`;
-    showStatus(`正在获取 ${label} 新闻... (${i+1}/${categories.length})`, 'info');
+  // === 阶段 1: 尝试 Marketaux ===
+  if (marketauxKey) {
+    addLog('🚀 开始尝试 Marketaux...');
+    showStatus('正在尝试 Marketaux...', 'info');
 
-    try {
-      const articles = await fetchOneCategory(category, query, apiKey);
-      allNews = allNews.concat(articles);
-      // 实时更新
-      news = allNews;
-      renderNews();
-    } catch (e) {
-      realErrors.push(`[${label}] ${e.message}`);
+    const categories = Object.entries(marketauxQueries);
+    let marketauxSuccess = 0;
+
+    for (let i = 0; i < categories.length; i++) {
+      const [category, params] = categories[i];
+      const label = { portfolio: '持仓', oil: '油价', war: '战况', ai: 'AI' }[category];
+      btn.textContent = `⏳ Marketaux ${i+1}/${categories.length}: ${label}`;
+
+      try {
+        const articles = await fetchFromMarketaux(category, params, marketauxKey);
+        allNews = allNews.concat(articles);
+        marketauxSuccess++;
+        addLog(`✅ Marketaux [${label}]: ${articles.length} 条`);
+        news = allNews;
+        renderNews();
+      } catch (e) {
+        addLog(`❌ Marketaux [${label}]: ${e.message}`);
+      }
+
+      if (i < categories.length - 1) await new Promise(r => setTimeout(r, 1000));
     }
 
-    // 不是最后一个,等 1.5 秒避免限速
-    if (i < categories.length - 1) {
-      await new Promise(r => setTimeout(r, RATE_LIMIT_DELAY));
+    addLog(`📊 Marketaux 共获取 ${allNews.length} 条`);
+
+    if (marketauxSuccess > 0) {
+      btn.disabled = false;
+      btn.textContent = '🔄 获取最新新闻';
+      showStatus(`✅ Marketaux 成功 · 获取 ${allNews.length} 条新闻`, 'success');
+      setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 5000);
+      return;
+    }
+
+    addLog('⚠️ Marketaux 全部失败,尝试 GNews...');
+  }
+
+  // === 阶段 2: 尝试 GNews(仅在 Marketaux 失败时)===
+  if (gnewsKey) {
+    showStatus('Marketaux 失败,尝试 GNews...', 'info');
+    const categories = Object.entries(gnewsQueries);
+
+    for (let i = 0; i < categories.length; i++) {
+      const [category, query] = categories[i];
+      const label = { portfolio: '持仓', oil: '油价', war: '战况', ai: 'AI' }[category];
+      btn.textContent = `⏳ GNews ${i+1}/${categories.length}: ${label}`;
+
+      try {
+        const articles = await fetchFromGNews(category, query, gnewsKey);
+        allNews = allNews.concat(articles);
+        addLog(`✅ GNews [${label}]: ${articles.length} 条`);
+        news = allNews;
+        renderNews();
+      } catch (e) {
+        addLog(`❌ GNews [${label}]: ${e.message}`);
+      }
+
+      if (i < categories.length - 1) await new Promise(r => setTimeout(r, 1500));
     }
   }
 
@@ -300,14 +412,9 @@ async function fetchAllNews() {
   btn.textContent = '🔄 获取最新新闻';
 
   if (allNews.length === 0) {
-    showStatus(`❌ 失败,可能需要等 5-10 分钟限速解除:${realErrors.join(' · ')}`, 'error');
-    return;
-  }
-
-  if (realErrors.length > 0) {
-    showStatus(`⚠️ 获取到 ${allNews.length} 条,部分失败:${realErrors.join(' · ')}`, 'warn');
+    showStatus(`❌ 全部失败 · 诊断如下:<div class="diagnostic">${log.join('\n')}</div>`, 'error');
   } else {
-    showStatus(`✅ 获取到 ${allNews.length} 条新闻`, 'success');
+    showStatus(`⚠️ 部分成功 · 获取 ${allNews.length} 条 · 诊断:<div class="diagnostic">${log.join('\n')}</div>`, 'warn');
   }
 }
 
