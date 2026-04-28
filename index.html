@@ -25,17 +25,11 @@
   }
   .section-title { font-size: 14px; font-weight: 600; color: #555; margin-bottom: 12px; }
   .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .stat-label {
-    font-size: 11px; color: #888; text-transform: uppercase;
-    letter-spacing: 0.4px; margin-bottom: 4px;
-  }
+  .stat-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
   .stat-value { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .stat-value.green { color: #10b981; }
   .stat-value.red { color: #ef4444; }
-  .holding-mini {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
-  }
+  .holding-mini { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
   .holding-mini:last-child { border-bottom: none; }
   .h-ticker { font-weight: 600; font-size: 15px; }
   .h-shares { font-size: 11px; color: #888; margin-top: 2px; }
@@ -43,109 +37,53 @@
   .h-pnl { font-size: 12px; margin-top: 2px; font-variant-numeric: tabular-nums; }
   .h-price.green, .h-pnl.green { color: #10b981; }
   .h-price.red, .h-pnl.red { color: #ef4444; }
-  .api-key-block {
-    background: #f9fafb; border-radius: 8px; padding: 12px;
-    margin-bottom: 10px; border: 1px solid #e5e7eb;
-  }
-  .api-key-label {
-    font-size: 12px; font-weight: 500; color: #555; margin-bottom: 6px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .priority-badge {
-    font-size: 9px; padding: 2px 6px; border-radius: 3px;
-    background: #dcfce7; color: #166534; font-weight: 600;
-  }
+  .api-key-block { background: #f9fafb; border-radius: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid #e5e7eb; }
+  .api-key-label { font-size: 12px; font-weight: 500; color: #555; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+  .priority-badge { font-size: 9px; padding: 2px 6px; border-radius: 3px; background: #dcfce7; color: #166534; font-weight: 600; }
   .api-key-row { display: flex; gap: 6px; align-items: center; }
-  .api-key-input {
-    flex: 1; padding: 7px 10px; border: 1px solid #e0e0e0;
-    border-radius: 6px; font-size: 11px; font-family: monospace; background: white;
-  }
-  .save-btn {
-    padding: 7px 12px; background: #0891b2; color: white;
-    border: none; border-radius: 6px; font-size: 11px; font-weight: 500;
-    cursor: pointer; font-family: inherit; white-space: nowrap;
-  }
+  .api-key-input { flex: 1; padding: 7px 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 11px; font-family: monospace; background: white; }
+  .save-btn { padding: 7px 12px; background: #0891b2; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap; }
   .api-key-hint { font-size: 11px; color: #888; margin-top: 6px; }
   .api-key-hint a { color: #2563eb; text-decoration: none; }
-  .fetch-btn {
-    width: 100%; padding: 11px; background: #0891b2; color: white;
-    border: none; border-radius: 8px; font-size: 13px; font-weight: 500;
-    cursor: pointer; font-family: inherit; margin-top: 12px;
-  }
+  .free-source-info { background: #ecfdf5; border: 1px solid #6ee7b7; padding: 8px 12px; border-radius: 6px; font-size: 11px; color: #065f46; margin-top: 8px; }
+  .fetch-btn { width: 100%; padding: 11px; background: #0891b2; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 12px; }
   .fetch-btn:active { background: #0e7490; }
   .fetch-btn:disabled { background: #93c5fd; cursor: not-allowed; }
-  .cache-bar {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 12px; background: #f0fdf4; border: 1px solid #86efac;
-    border-radius: 6px; font-size: 11px; color: #166534;
-    margin-top: 10px;
-  }
+  .cache-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; font-size: 11px; color: #166534; margin-top: 10px; }
   .cache-bar.stale { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
-  .clear-cache-btn {
-    background: transparent; border: none; color: inherit;
-    font-size: 11px; text-decoration: underline; cursor: pointer;
-    font-family: inherit; padding: 0;
-  }
+  .clear-cache-btn { background: transparent; border: none; color: inherit; font-size: 11px; text-decoration: underline; cursor: pointer; font-family: inherit; padding: 0; }
   .tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
-  .tab {
-    padding: 7px 14px; background: #f0f0f0; color: #555;
-    border: none; border-radius: 16px; font-size: 12px; font-weight: 500;
-    cursor: pointer; font-family: inherit;
-  }
+  .tab { padding: 7px 14px; background: #f0f0f0; color: #555; border: none; border-radius: 16px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; }
   .tab.active { background: #1a1a1a; color: white; }
   .news-item { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
   .news-item:last-child { border-bottom: none; }
-  .news-category {
-    display: inline-block; padding: 2px 8px; border-radius: 4px;
-    font-size: 10px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.5px; margin-bottom: 6px;
-  }
+  .news-category { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
   .cat-portfolio { background: #dbeafe; color: #1e40af; }
   .cat-oil { background: #fed7aa; color: #92400e; }
   .cat-war { background: #fee2e2; color: #991b1b; }
   .cat-ai { background: #e9d5ff; color: #6b21a8; }
+  .cat-reddit { background: #ffedd5; color: #9a3412; }
+  .cat-hn { background: #fde68a; color: #78350f; }
   .news-title { font-size: 15px; font-weight: 500; line-height: 1.4; margin-bottom: 6px; }
   .news-meta { font-size: 11px; color: #888; margin-bottom: 10px; }
   .news-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  .translate-btn {
-    padding: 6px 12px; background: #1a1a1a; color: white;
-    border: none; border-radius: 6px; font-size: 12px; font-weight: 500;
-    cursor: pointer; font-family: inherit;
-  }
-  .link-btn {
-    padding: 6px 12px; background: #f0f0f0; color: #555;
-    border: none; border-radius: 6px; font-size: 12px; font-weight: 500;
-    cursor: pointer; font-family: inherit; text-decoration: none;
-    display: inline-block;
-  }
+  .translate-btn { padding: 6px 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; }
+  .link-btn { padding: 6px 12px; background: #f0f0f0; color: #555; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; text-decoration: none; display: inline-block; }
   .empty { padding: 32px 16px; text-align: center; color: #aaa; font-size: 13px; }
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    background: #1a1a1a; color: white; padding: 12px 20px;
-    border-radius: 8px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    opacity: 0; transition: opacity 0.3s; z-index: 100;
-  }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 12px 20px; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0; transition: opacity 0.3s; z-index: 100; }
   .toast.show { opacity: 1; }
-  .status-msg {
-    font-size: 12px; padding: 10px 12px; border-radius: 6px; margin: 12px 0;
-    line-height: 1.5;
-  }
+  .status-msg { font-size: 12px; padding: 10px 12px; border-radius: 6px; margin: 12px 0; line-height: 1.5; }
   .status-msg.success { background: #d1fae5; color: #065f46; }
   .status-msg.error { background: #fee2e2; color: #991b1b; }
   .status-msg.info { background: #dbeafe; color: #1e40af; }
   .status-msg.warn { background: #fef3c7; color: #92400e; }
-  .diagnostic {
-    font-size: 11px; font-family: monospace; background: #1f2937;
-    color: #d1fae5; padding: 10px; border-radius: 6px;
-    margin-top: 8px; white-space: pre-wrap; word-break: break-all;
-    line-height: 1.5;
-  }
+  .diagnostic { font-size: 11px; font-family: monospace; background: #1f2937; color: #d1fae5; padding: 10px; border-radius: 6px; margin-top: 8px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>我的资讯驾驶舱<span class="version-tag">v9 AI 加强</span></h1>
-  <div class="subtitle">持仓 + 财经新闻 + AI 板块 3 倍内容 + 自动缓存</div>
+  <h1>我的资讯驾驶舱<span class="version-tag">v10 全网最新</span></h1>
+  <div class="subtitle">财经新闻 + Reddit 散户 + HackerNews 极客 · 近 3 天</div>
 
   <div class="card">
     <div class="section-title">💼 持仓总览</div>
@@ -169,9 +107,7 @@
         <input type="password" class="api-key-input" id="marketauxKey" placeholder="粘贴你的 Marketaux Token">
         <button class="save-btn" onclick="saveKey('marketaux')">保存</button>
       </div>
-      <div class="api-key-hint">
-        没有?<a href="https://www.marketaux.com/account/dashboard" target="_blank">marketaux.com</a> 免费注册
-      </div>
+      <div class="api-key-hint">没有?<a href="https://www.marketaux.com/account/dashboard" target="_blank">marketaux.com</a> 免费注册</div>
     </div>
 
     <div class="api-key-block">
@@ -185,19 +121,25 @@
       </div>
     </div>
 
+    <div class="free-source-info">
+      ✅ Reddit 和 HackerNews <strong>完全免费</strong>,不需要 Key
+    </div>
+
     <button class="fetch-btn" id="fetchBtn" onclick="fetchAllNews()">🔄 获取最新新闻</button>
     <div id="cacheInfo"></div>
     <div id="statusMsg"></div>
   </div>
 
   <div class="card">
-    <div class="section-title">📰 新闻列表 <span style="font-weight: 400; font-size: 12px; color: #888;" id="newsCount"></span></div>
+    <div class="section-title">📰 资讯列表 <span style="font-weight: 400; font-size: 12px; color: #888;" id="newsCount"></span></div>
     <div class="tabs">
       <button class="tab active" onclick="setFilter('all', event)">全部</button>
       <button class="tab" onclick="setFilter('portfolio', event)">💼 持仓</button>
       <button class="tab" onclick="setFilter('oil', event)">🛢️ 油价</button>
       <button class="tab" onclick="setFilter('war', event)">⚔️ 战况</button>
       <button class="tab" onclick="setFilter('ai', event)">🤖 AI</button>
+      <button class="tab" onclick="setFilter('reddit', event)">🔥 散户</button>
+      <button class="tab" onclick="setFilter('hn', event)">💻 极客</button>
     </div>
     <div id="newsList"></div>
   </div>
@@ -215,17 +157,24 @@ let news = [];
 let currentFilter = 'all';
 let lastFetchTime = null;
 
-// === v9 关键改动:每个分类是数组,可多次搜索 ===
+// === 时间窗口:近 3 天(永远动态计算)===
+const DAYS_BACK = 3;
+
+function getRecentDate(daysAgo = DAYS_BACK) {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return d.toISOString().split('T')[0];
+}
+
+function getRecentTimestamp(daysAgo = DAYS_BACK) {
+  return Math.floor((Date.now() - daysAgo * 86400000) / 1000);
+}
+
+// === Marketaux 配置(每个分类多次搜索)===
 const marketauxQueries = {
-  portfolio: [
-    { symbols: 'AMD,ARM,TSM' }
-  ],
-  oil: [
-    { search: 'oil OR OPEC' }
-  ],
-  war: [
-    { search: 'Ukraine OR Israel OR conflict' }
-  ],
+  portfolio: [{ symbols: 'AMD,ARM,TSM' }],
+  oil: [{ search: 'oil OR OPEC' }],
+  war: [{ search: 'Ukraine OR Israel OR conflict' }],
   ai: [
     { search: 'OpenAI OR Anthropic OR ChatGPT OR Claude' },
     { search: '"AI agent" OR Gemini OR Llama OR Mistral' },
@@ -243,6 +192,12 @@ const gnewsQueries = {
     'DeepSeek OR xAI OR AGI'
   ]
 };
+
+// === Reddit 配置 ===
+const redditSubs = ['wallstreetbets', 'AMD_Stock', 'singularity', 'LocalLLaMA'];
+
+// === HackerNews 搜索词 ===
+const hnQueries = ['AI OR LLM', 'AMD OR Nvidia OR TSMC OR ARM', 'OpenAI OR Anthropic'];
 
 function fmt(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
@@ -267,7 +222,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// === 缓存管理 ===
+// === 缓存 ===
 function saveNewsCache() {
   try {
     localStorage.setItem('cached_news', JSON.stringify(news));
@@ -310,7 +265,7 @@ function renderCacheInfo() {
     : Math.floor(ageHours) + ' 小时前';
   el.innerHTML = `
     <div class="cache-bar ${isStale ? 'stale' : ''}">
-      <span>${isStale ? '⚠️' : '💾'} 缓存 ${news.length} 条新闻 · ${ageText}更新</span>
+      <span>${isStale ? '⚠️' : '💾'} 缓存 ${news.length} 条 · ${ageText}更新</span>
       <button class="clear-cache-btn" onclick="clearNewsCache()">清除</button>
     </div>`;
 }
@@ -354,9 +309,10 @@ function renderHoldings() {
   document.getElementById('totalPnl').className = 'stat-value ' + (totalPnl >= 0 ? 'green' : 'red');
 }
 
-// === API 请求 ===
+// === Marketaux(动态时间 + 排序)===
 async function fetchFromMarketaux(category, params, apiKey) {
-  let url = `https://api.marketaux.com/v1/news/all?language=en&limit=3&api_token=${apiKey}`;
+  const recentDate = getRecentDate();
+  let url = `https://api.marketaux.com/v1/news/all?language=en&limit=3&sort=published_desc&published_after=${recentDate}&api_token=${apiKey}`;
   if (params.symbols) url += `&symbols=${params.symbols}`;
   if (params.search) url += `&search=${encodeURIComponent(params.search)}`;
   const res = await fetch(url);
@@ -374,8 +330,10 @@ async function fetchFromMarketaux(category, params, apiKey) {
   }));
 }
 
+// === GNews(动态时间 + 排序)===
 async function fetchFromGNews(category, query, apiKey) {
-  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=3&apikey=${apiKey}`;
+  const fromDate = getRecentDate() + 'T00:00:00Z';
+  const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&max=3&sortby=publishedAt&from=${fromDate}&apikey=${apiKey}`;
   const res = await fetch(url);
   const data = await res.json();
   if (data.errors) {
@@ -394,7 +352,49 @@ async function fetchFromGNews(category, query, apiKey) {
   }));
 }
 
-// === v9 新增:基于标题去重 ===
+// === Reddit(免费)===
+async function fetchFromReddit(sub) {
+  const url = `https://www.reddit.com/r/${sub}/hot.json?limit=10`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (!data.data || !data.data.children) throw new Error('返回格式异常');
+
+  const cutoff = getRecentTimestamp();
+  return data.data.children
+    .map(c => c.data)
+    .filter(p => p.created_utc >= cutoff && !p.stickied)
+    .slice(0, 5)
+    .map(p => ({
+      id: p.id,
+      title: p.title,
+      description: p.selftext ? p.selftext.slice(0, 280) : '',
+      category: 'reddit',
+      source: `r/${sub} · ${p.score} ups · ${p.num_comments} 评论`,
+      timestamp: p.created_utc * 1000,
+      url: `https://reddit.com${p.permalink}`
+    }));
+}
+
+// === HackerNews(免费,Algolia API)===
+async function fetchFromHN(query) {
+  const cutoff = getRecentTimestamp();
+  const url = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&numericFilters=created_at_i>${cutoff}&hitsPerPage=5`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (!data.hits) throw new Error('返回格式异常');
+  return data.hits.map(h => ({
+    id: h.objectID,
+    title: h.title,
+    description: '',
+    category: 'hn',
+    source: `HackerNews · ${h.points || 0} 分 · ${h.num_comments || 0} 评论`,
+    timestamp: h.created_at_i * 1000,
+    url: h.url || `https://news.ycombinator.com/item?id=${h.objectID}`
+  }));
+}
+
 function dedupeNews(articles) {
   const seen = new Set();
   return articles.filter(a => {
@@ -405,29 +405,22 @@ function dedupeNews(articles) {
   });
 }
 
-// === 主流程(v9 多查询循环)===
 async function fetchAllNews() {
   const marketauxKey = document.getElementById('marketauxKey').value.trim();
   const gnewsKey = document.getElementById('gnewsKey').value.trim();
-
-  if (!marketauxKey && !gnewsKey) {
-    showStatus('❌ 请至少填一个 API Key', 'error');
-    return;
-  }
 
   const btn = document.getElementById('fetchBtn');
   btn.disabled = true;
   const log = [];
   let allNews = [];
+  let stage = 0;
 
-  // === Marketaux ===
+  // === 阶段 1:Marketaux(财经新闻 4 类)===
   if (marketauxKey) {
-    showStatus('正在尝试 Marketaux...', 'info');
+    showStatus('正在获取财经新闻...', 'info');
     let success = 0;
     let totalQueries = 0;
-    for (const queryList of Object.values(marketauxQueries)) {
-      totalQueries += queryList.length;
-    }
+    for (const q of Object.values(marketauxQueries)) totalQueries += q.length;
 
     let queryIndex = 0;
     for (const [category, queryList] of Object.entries(marketauxQueries)) {
@@ -435,7 +428,7 @@ async function fetchAllNews() {
       let categoryArticles = [];
       for (let i = 0; i < queryList.length; i++) {
         queryIndex++;
-        btn.textContent = `⏳ Marketaux ${queryIndex}/${totalQueries}: ${label}${queryList.length > 1 ? ` (${i+1}/${queryList.length})` : ''}`;
+        btn.textContent = `⏳ 财经 ${queryIndex}/${totalQueries}: ${label}`;
         try {
           const articles = await fetchFromMarketaux(category, queryList[i], marketauxKey);
           categoryArticles = categoryArticles.concat(articles);
@@ -447,50 +440,68 @@ async function fetchAllNews() {
       }
       const deduped = dedupeNews(categoryArticles);
       allNews = allNews.concat(deduped);
-      log.push(`✅ Marketaux [${label}]: ${deduped.length} 条(去重前 ${categoryArticles.length})`);
       news = allNews;
       renderNews();
     }
 
-    if (success > 0) {
-      btn.disabled = false;
-      btn.textContent = '🔄 获取最新新闻';
-      saveNewsCache();
-      showStatus(`✅ Marketaux 成功 · 获取 ${allNews.length} 条新闻 · 已缓存`, 'success');
-      setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 5000);
-      return;
-    }
-  }
-
-  // === GNews 备用 ===
-  if (gnewsKey) {
-    showStatus('Marketaux 失败,尝试 GNews...', 'info');
-    let totalQueries = 0;
-    for (const queryList of Object.values(gnewsQueries)) {
-      totalQueries += queryList.length;
-    }
-
-    let queryIndex = 0;
-    for (const [category, queryList] of Object.entries(gnewsQueries)) {
-      const label = { portfolio: '持仓', oil: '油价', war: '战况', ai: 'AI' }[category];
-      let categoryArticles = [];
-      for (let i = 0; i < queryList.length; i++) {
-        queryIndex++;
-        btn.textContent = `⏳ GNews ${queryIndex}/${totalQueries}: ${label}`;
-        try {
-          const articles = await fetchFromGNews(category, queryList[i], gnewsKey);
-          categoryArticles = categoryArticles.concat(articles);
-        } catch (e) {
-          log.push(`❌ GNews [${label}#${i+1}]: ${e.message}`);
+    // 财经失败 → 备用 GNews
+    if (success === 0 && gnewsKey) {
+      showStatus('Marketaux 失败,尝试 GNews...', 'info');
+      let totalGN = 0;
+      for (const q of Object.values(gnewsQueries)) totalGN += q.length;
+      let gnIdx = 0;
+      for (const [category, queryList] of Object.entries(gnewsQueries)) {
+        const label = { portfolio: '持仓', oil: '油价', war: '战况', ai: 'AI' }[category];
+        let arts = [];
+        for (let i = 0; i < queryList.length; i++) {
+          gnIdx++;
+          btn.textContent = `⏳ GNews ${gnIdx}/${totalGN}: ${label}`;
+          try {
+            const articles = await fetchFromGNews(category, queryList[i], gnewsKey);
+            arts = arts.concat(articles);
+          } catch (e) {
+            log.push(`❌ GNews [${label}#${i+1}]: ${e.message}`);
+          }
+          if (gnIdx < totalGN) await new Promise(r => setTimeout(r, 1500));
         }
-        if (queryIndex < totalQueries) await new Promise(r => setTimeout(r, 1500));
+        allNews = allNews.concat(dedupeNews(arts));
+        news = allNews;
+        renderNews();
       }
-      const deduped = dedupeNews(categoryArticles);
-      allNews = allNews.concat(deduped);
-      news = allNews;
-      renderNews();
     }
   }
+
+  // === 阶段 2:Reddit(免费,4 个 sub)===
+  showStatus('正在获取 Reddit 散户讨论...', 'info');
+  for (let i = 0; i < redditSubs.length; i++) {
+    const sub = redditSubs[i];
+    btn.textContent = `⏳ Reddit ${i+1}/${redditSubs.length}: r/${sub}`;
+    try {
+      const posts = await fetchFromReddit(sub);
+      allNews = allNews.concat(posts);
+      news = allNews;
+      renderNews();
+    } catch (e) {
+      log.push(`❌ Reddit [r/${sub}]: ${e.message}`);
+    }
+    if (i < redditSubs.length - 1) await new Promise(r => setTimeout(r, 500));
+  }
+
+  // === 阶段 3:HackerNews(免费,3 个搜索)===
+  showStatus('正在获取 HackerNews 极客讨论...', 'info');
+  let hnArticles = [];
+  for (let i = 0; i < hnQueries.length; i++) {
+    btn.textContent = `⏳ HackerNews ${i+1}/${hnQueries.length}`;
+    try {
+      const items = await fetchFromHN(hnQueries[i]);
+      hnArticles = hnArticles.concat(items);
+    } catch (e) {
+      log.push(`❌ HN [${hnQueries[i]}]: ${e.message}`);
+    }
+    if (i < hnQueries.length - 1) await new Promise(r => setTimeout(r, 500));
+  }
+  allNews = allNews.concat(dedupeNews(hnArticles));
+  news = allNews;
 
   btn.disabled = false;
   btn.textContent = '🔄 获取最新新闻';
@@ -499,9 +510,14 @@ async function fetchAllNews() {
     showStatus(`❌ 全部失败<div class="diagnostic">${log.join('\n')}</div>`, 'error');
   } else {
     saveNewsCache();
-    showStatus(`✅ 获取 ${allNews.length} 条 · 已缓存`, 'success');
-    setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 5000);
+    if (log.length > 0) {
+      showStatus(`✅ 获取 ${allNews.length} 条 · 已缓存 · 部分失败<div class="diagnostic">${log.join('\n')}</div>`, 'warn');
+    } else {
+      showStatus(`✅ 获取 ${allNews.length} 条 · 已缓存`, 'success');
+      setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 5000);
+    }
   }
+  renderNews();
 }
 
 function setFilter(f, ev) {
@@ -517,8 +533,8 @@ function renderNews() {
   document.getElementById('newsCount').textContent = news.length > 0 ? `(${filtered.length} / ${news.length})` : '';
   if (filtered.length === 0) {
     list.innerHTML = news.length === 0
-      ? '<div class="empty">还没有新闻 — 输入 Key 然后点"获取最新新闻"</div>'
-      : '<div class="empty">这个分类还没有新闻</div>';
+      ? '<div class="empty">还没有新闻 — 点"获取最新新闻"</div>'
+      : '<div class="empty">这个分类还没有内容</div>';
     return;
   }
   const sorted = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
@@ -535,13 +551,20 @@ function renderNews() {
 }
 
 function categoryLabel(c) {
-  return { portfolio: '💼 持仓', oil: '🛢️ 油价', war: '⚔️ 战况', ai: '🤖 AI' }[c] || c;
+  return {
+    portfolio: '💼 持仓',
+    oil: '🛢️ 油价',
+    war: '⚔️ 战况',
+    ai: '🤖 AI',
+    reddit: '🔥 散户',
+    hn: '💻 极客'
+  }[c] || c;
 }
 
 function translateNews(id) {
   const n = news.find(x => String(x.id) === String(id));
   if (!n) return;
-  const prompt = `请帮我处理这条英文新闻:\n\n标题:${n.title}\n${n.description ? '\n摘要:' + n.description : ''}\n来源:${n.source} · 分类:${categoryLabel(n.category)}\n\n请给我:\n1. 中文标题\n2. 3 个核心要点\n3. 对我投资组合(AMD/ARM/TSM)或国际局势的影响`;
+  const prompt = `请帮我处理这条英文资讯:\n\n标题:${n.title}\n${n.description ? '\n摘要:' + n.description : ''}\n来源:${n.source} · 分类:${categoryLabel(n.category)}\n\n请给我:\n1. 中文标题\n2. 3 个核心要点\n3. 对我投资组合(AMD/ARM/TSM)或国际局势的影响`;
   navigator.clipboard.writeText(prompt).then(() => {
     showToast('✅ 已复制!回 Claude 黏贴即可');
   }).catch(() => alert('复制失败,请手动复制:\n\n' + prompt));
