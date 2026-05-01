@@ -21,19 +21,40 @@
   .subtitle { color: #888; font-size: 13px; margin-top: 4px; margin-bottom: 24px; }
   .card { background: white; border-radius: 14px; padding: 18px; margin-bottom: 16px; border: 1px solid #eee; }
   .section-title { font-size: 14px; font-weight: 600; color: #555; margin-bottom: 12px; }
+
+  /* 总览 */
   .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
   .stat-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
   .stat-value { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .stat-value.green { color: #10b981; }
   .stat-value.red { color: #ef4444; }
+
+  /* 持仓分组 */
+  .group-header { display: flex; align-items: center; gap: 8px; margin: 16px 0 8px; padding-top: 10px; border-top: 1px dashed #e5e7eb; }
+  .group-header:first-of-type { border-top: none; padding-top: 0; }
+  .group-name { font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+  .group-tag { font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+  .tag-ai { background: #e9d5ff; color: #6b21a8; }
+  .tag-legacy { background: #dbeafe; color: #1e40af; }
+  .tag-other { background: #fef3c7; color: #92400e; }
+  .tag-locked { background: #fee2e2; color: #991b1b; }
+
   .holding-mini { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
   .holding-mini:last-child { border-bottom: none; }
+  .h-left { flex: 1; min-width: 0; }
+  .h-ticker-row { display: flex; align-items: center; gap: 6px; }
   .h-ticker { font-weight: 600; font-size: 15px; }
+  .h-badge { font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+  .badge-winner { background: #d1fae5; color: #065f46; }
+  .badge-locked { background: #fee2e2; color: #991b1b; }
   .h-shares { font-size: 11px; color: #888; margin-top: 2px; }
-  .h-price { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
-  .h-pnl { font-size: 12px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .h-price { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .h-pnl { font-size: 11px; margin-top: 2px; font-variant-numeric: tabular-nums; }
   .h-price.green, .h-pnl.green { color: #10b981; }
   .h-price.red, .h-pnl.red { color: #ef4444; }
+  .h-price.gray, .h-pnl.gray { color: #888; }
+
+  /* API 设置 */
   .api-key-block { background: #f9fafb; border-radius: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid #e5e7eb; }
   .api-key-label { font-size: 12px; font-weight: 500; color: #555; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
   .priority-badge { font-size: 9px; padding: 2px 6px; border-radius: 3px; background: #dcfce7; color: #166534; font-weight: 600; }
@@ -46,12 +67,18 @@
   .fetch-btn { width: 100%; padding: 11px; background: #0891b2; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 12px; }
   .fetch-btn:active { background: #0e7490; }
   .fetch-btn:disabled { background: #93c5fd; cursor: not-allowed; }
+
+  /* 缓存条 */
   .cache-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; font-size: 11px; color: #166534; margin-top: 10px; }
   .cache-bar.stale { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
   .clear-cache-btn { background: transparent; border: none; color: inherit; font-size: 11px; text-decoration: underline; cursor: pointer; font-family: inherit; padding: 0; }
+
+  /* Tabs */
   .tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
   .tab { padding: 7px 14px; background: #f0f0f0; color: #555; border: none; border-radius: 16px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; }
   .tab.active { background: #1a1a1a; color: white; }
+
+  /* 新闻 */
   .news-item { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
   .news-item:last-child { border-bottom: none; }
   .news-category { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
@@ -66,6 +93,8 @@
   .translate-btn { padding: 6px 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; }
   .link-btn { padding: 6px 12px; background: #f0f0f0; color: #555; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; text-decoration: none; display: inline-block; }
   .empty { padding: 32px 16px; text-align: center; color: #aaa; font-size: 13px; }
+
+  /* Toast & Status */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 12px 20px; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0; transition: opacity 0.3s; z-index: 100; }
   .toast.show { opacity: 1; }
   .status-msg { font-size: 12px; padding: 10px 12px; border-radius: 6px; margin: 12px 0; line-height: 1.5; }
@@ -74,31 +103,42 @@
   .status-msg.info { background: #dbeafe; color: #1e40af; }
   .status-msg.warn { background: #fef3c7; color: #92400e; }
   .diagnostic { font-size: 11px; font-family: monospace; background: #1f2937; color: #d1fae5; padding: 10px; border-radius: 6px; margin-top: 8px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
-  .ask-claude-cta {
-    background: linear-gradient(135deg, #fef3c7, #fde68a);
-    border: 1px solid #f59e0b;
-    padding: 12px 14px; border-radius: 8px; font-size: 12px;
-    color: #78350f; line-height: 1.6;
-    margin-top: 14px;
-  }
-  .ask-claude-cta strong { color: #92400e; }
+
+  /* Total assets */
+  .total-assets { background: linear-gradient(135deg, #1e293b, #334155); color: white; padding: 14px; border-radius: 10px; margin-bottom: 12px; }
+  .total-assets .label { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+  .total-assets .value { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .total-assets .breakdown { font-size: 11px; opacity: 0.8; margin-top: 6px; line-height: 1.5; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>我的资讯驾驶舱<span class="version-tag">v12 终结版</span></h1>
-  <div class="subtitle">财经新闻 + HackerNews 极客 · 近 3 天 · 散户情绪交给 Claude</div>
+  <h1>我的资讯驾驶舱<span class="version-tag">v13 真实持仓</span></h1>
+  <div class="subtitle">$3.5M 总资产 · 自管 $1M · AI 革命押注者</div>
 
+  <!-- 总资产卡 -->
   <div class="card">
-    <div class="section-title">💼 持仓总览</div>
-    <div class="summary-grid">
-      <div><div class="stat-label">总成本</div><div class="stat-value" id="totalCost">$0</div></div>
-      <div><div class="stat-label">总价值</div><div class="stat-value" id="totalValue">$0</div></div>
-      <div><div class="stat-label">总盈亏</div><div class="stat-value" id="totalPnl">$0</div></div>
+    <div class="total-assets">
+      <div class="label">总资产</div>
+      <div class="value">$3,500,000</div>
+      <div class="breakdown">
+        股票 $2.2M(自管 $1M + AMZN 锁仓 $1.2M)<br>
+        其他资产 $1.3M
+      </div>
     </div>
+
+    <div class="section-title" style="margin-top: 18px;">💼 自管账户持仓($1M)</div>
+
+    <div class="summary-grid">
+      <div><div class="stat-label">已部署</div><div class="stat-value" id="totalValue">$0</div></div>
+      <div><div class="stat-label">总盈亏</div><div class="stat-value" id="totalPnl">$0</div></div>
+      <div><div class="stat-label">现金</div><div class="stat-value" id="totalCash">$0</div></div>
+    </div>
+
     <div id="holdingsMini" style="margin-top: 14px;"></div>
   </div>
 
+  <!-- 新闻 API 设置 -->
   <div class="card">
     <div class="section-title">🔑 新闻 API 设置</div>
 
@@ -126,27 +166,23 @@
     </div>
 
     <div class="free-source-info">
-      ✅ HackerNews <strong>完全免费</strong>,无需 Key,8 个搜索词覆盖 AI / 芯片 / 财经
+      ✅ HackerNews <strong>完全免费</strong>,8 个搜索词覆盖 AI / 芯片 / 财经
     </div>
 
     <button class="fetch-btn" id="fetchBtn" onclick="fetchAllNews()">🔄 获取最新新闻</button>
     <div id="cacheInfo"></div>
     <div id="statusMsg"></div>
-
-    <div class="ask-claude-cta">
-      💡 <strong>想看散户情绪 / Twitter / 大佬观点?</strong><br>
-      直接来 Claude 这里说"今天 wallstreetbets 在炒什么"或"Lisa Su 最近怎么说",我会用 web search 给你实时整理。
-    </div>
   </div>
 
+  <!-- 资讯列表 -->
   <div class="card">
     <div class="section-title">📰 资讯列表 <span style="font-weight: 400; font-size: 12px; color: #888;" id="newsCount"></span></div>
     <div class="tabs">
       <button class="tab active" onclick="setFilter('all', event)">全部</button>
       <button class="tab" onclick="setFilter('portfolio', event)">💼 持仓</button>
+      <button class="tab" onclick="setFilter('ai', event)">🤖 AI</button>
       <button class="tab" onclick="setFilter('oil', event)">🛢️ 油价</button>
       <button class="tab" onclick="setFilter('war', event)">⚔️ 战况</button>
-      <button class="tab" onclick="setFilter('ai', event)">🤖 AI</button>
       <button class="tab" onclick="setFilter('hn', event)">💻 极客</button>
     </div>
     <div id="newsList"></div>
@@ -156,11 +192,75 @@
 <div class="toast" id="toast">已复制到剪贴板</div>
 
 <script>
-let holdings = [
-  { id: 1, ticker: 'AMD', buyPrice: 280.00, shares: 10, currentPrice: 331.40 },
-  { id: 2, ticker: 'ARM', buyPrice: 180.00, shares: 20, currentPrice: 215.30 },
-  { id: 3, ticker: 'TSM', buyPrice: 380.00, shares: 5, currentPrice: 411.77 }
+// ========================================
+// v13 真实持仓配置
+// 数据来源:用户告诉 Claude 的真实仓位
+// ========================================
+
+const holdings = [
+  // === AI 革命押注 ===
+  {
+    ticker: 'TSLA', name: 'Tesla',
+    shares: 299, buyPrice: null,  // 成本未知
+    currentPrice: 378.81,
+    group: 'ai', tag: 'AI 物理化身'
+  },
+  {
+    ticker: 'INTC', name: 'Intel',
+    shares: 1000, buyPrice: 20,
+    currentPrice: 98.52,
+    group: 'ai', tag: 'CPU 转型',
+    badge: 'winner'  // 标记为赢家
+  },
+  {
+    ticker: 'ARM', name: 'ARM Holdings',
+    shares: 440, buyPrice: 220,
+    currentPrice: 213.89,
+    group: 'ai', tag: 'CPU IP + 省电'
+  },
+  {
+    ticker: 'AMD', name: 'AMD',
+    shares: 210, buyPrice: 325,
+    currentPrice: 353.43,
+    group: 'ai', tag: 'CPU + GPU'
+  },
+  {
+    ticker: 'GOOG', name: 'Alphabet',
+    shares: 60, buyPrice: null,
+    currentPrice: 381.24,
+    group: 'ai', tag: 'AI 巨头'
+  },
+  {
+    ticker: 'NVDA', name: 'NVIDIA',
+    shares: 30, buyPrice: null,
+    currentPrice: 199.57,
+    group: 'ai', tag: 'GPU 王者'
+  },
+
+  // === 传统科技 ===
+  {
+    ticker: 'CSCO', name: 'Cisco',
+    shares: 50, buyPrice: null,
+    currentPrice: 92.85,
+    group: 'legacy', tag: '网络设备'
+  },
+
+  // === 其他 ===
+  {
+    ticker: 'SWK', name: 'Stanley B&D',
+    shares: 1000, buyPrice: null,
+    currentPrice: 78.90,
+    group: 'other', tag: '工具/股息'
+  }
 ];
+
+// AMZN 锁仓(单独显示,不算入自管账户)
+const lockedHolding = {
+  ticker: 'AMZN', name: 'Amazon',
+  value: 1200000,
+  note: 'AI 受益(被动)'
+};
+
 let news = [];
 let currentFilter = 'all';
 let lastFetchTime = null;
@@ -177,41 +277,49 @@ function getRecentTimestamp(daysAgo = DAYS_BACK) {
   return Math.floor((Date.now() - daysAgo * 86400000) / 1000);
 }
 
+// === 新闻搜索关键词(基于真实持仓更新)===
 const marketauxQueries = {
-  portfolio: [{ symbols: 'AMD,ARM,TSM' }],
+  portfolio: [
+    { symbols: 'AMD,ARM,INTC,NVDA' },
+    { symbols: 'TSLA,GOOG,AMZN' }
+  ],
   oil: [{ search: 'oil OR OPEC' }],
   war: [{ search: 'Ukraine OR Israel OR conflict' }],
   ai: [
     { search: 'OpenAI OR Anthropic OR ChatGPT OR Claude' },
-    { search: '"AI agent" OR Gemini OR Llama OR Mistral' },
-    { search: 'DeepSeek OR xAI OR "AI startup" OR AGI' }
+    { search: '"AI agent" OR Gemini OR Llama' },
+    { search: 'DeepSeek OR xAI OR AGI OR "AI startup"' }
   ]
 };
 
 const gnewsQueries = {
-  portfolio: ['AMD OR "ARM Holdings" OR TSMC'],
-  oil: ['oil price OR OPEC'],
-  war: ['Ukraine OR "Middle East" OR Israel'],
+  portfolio: [
+    'AMD OR ARM OR Intel OR NVIDIA',
+    'Tesla OR Google OR Amazon'
+  ],
+  oil: ['oil OPEC'],
+  war: ['Ukraine Israel'],
   ai: [
-    'OpenAI OR Anthropic OR ChatGPT OR Claude',
-    '"AI agent" OR Gemini OR Llama',
-    'DeepSeek OR xAI OR AGI'
+    'OpenAI Anthropic',
+    'AI agent Gemini',
+    'DeepSeek AGI'
   ]
 };
 
-// === v12: HackerNews 加强到 8 个搜索词 ===
 const hnQueries = [
-  'AI OR LLM',
+  'AI OR LLM OR GPT',
   'AMD OR EPYC OR MI300',
-  'Nvidia OR TSMC OR ARM',
+  'Intel OR x86 OR foundry',
+  'ARM OR RISC-V OR Neoverse',
+  'Nvidia OR TSMC OR semiconductor',
+  'Tesla OR robotaxi OR FSD',
   'OpenAI OR Anthropic OR Claude',
-  'chip OR semiconductor',
-  'stocks OR trading OR market',
-  'agent OR agentic',
-  'datacenter OR GPU'
+  'agent OR agentic OR datacenter'
 ];
 
+// ============= Helper Functions =============
 function fmt(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function fmtK(n) { return '$' + (n / 1000).toFixed(1) + 'k'; }
 function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
 function timeAgo(ts) {
   const diff = Date.now() - ts;
@@ -234,18 +342,19 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// ============= 缓存 =============
 function saveNewsCache() {
   try {
-    localStorage.setItem('cached_news', JSON.stringify(news));
-    localStorage.setItem('cached_news_time', String(Date.now()));
+    localStorage.setItem('cached_news_v13', JSON.stringify(news));
+    localStorage.setItem('cached_news_time_v13', String(Date.now()));
     lastFetchTime = Date.now();
     renderCacheInfo();
   } catch (e) { console.warn('缓存失败:', e); }
 }
 function loadNewsCache() {
   try {
-    const cached = localStorage.getItem('cached_news');
-    const time = localStorage.getItem('cached_news_time');
+    const cached = localStorage.getItem('cached_news_v13');
+    const time = localStorage.getItem('cached_news_time_v13');
     if (cached && time) {
       news = JSON.parse(cached);
       lastFetchTime = parseInt(time, 10);
@@ -256,8 +365,8 @@ function loadNewsCache() {
 }
 function clearNewsCache() {
   if (!confirm('确认清除缓存的新闻?')) return;
-  localStorage.removeItem('cached_news');
-  localStorage.removeItem('cached_news_time');
+  localStorage.removeItem('cached_news_v13');
+  localStorage.removeItem('cached_news_time_v13');
   news = [];
   lastFetchTime = null;
   renderNews();
@@ -281,6 +390,7 @@ function renderCacheInfo() {
     </div>`;
 }
 
+// ============= 初始化 =============
 window.addEventListener('load', () => {
   const m = localStorage.getItem('marketaux_key');
   const g = localStorage.getItem('gnews_key');
@@ -302,24 +412,106 @@ function saveKey(type) {
   setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 3000);
 }
 
+// ============= 持仓渲染 =============
 function renderHoldings() {
-  let totalCost = 0, totalValue = 0;
-  document.getElementById('holdingsMini').innerHTML = holdings.map(h => {
-    const cost = h.buyPrice * h.shares;
+  let totalValue = 0;
+  let totalPnl = 0;
+  let knownCost = 0;
+
+  // 按组分组
+  const groups = {
+    ai: { name: 'AI 革命押注', tag: 'tag-ai', items: [] },
+    legacy: { name: '传统科技', tag: 'tag-legacy', items: [] },
+    other: { name: '其他配置', tag: 'tag-other', items: [] }
+  };
+
+  holdings.forEach(h => {
     const value = h.currentPrice * h.shares;
-    const pnl = value - cost;
-    const pnlPct = (pnl / cost) * 100;
-    const c = pnl >= 0 ? 'green' : 'red';
-    totalCost += cost; totalValue += value;
-    return `<div class="holding-mini"><div><div class="h-ticker">${h.ticker}</div><div class="h-shares">${h.shares} 股 × ${fmt(h.buyPrice)}</div></div><div style="text-align:right;"><div class="h-price ${c}">${fmt(h.currentPrice)}</div><div class="h-pnl ${c}">${pnl >= 0 ? '+' : ''}${fmt(pnl)} (${fmtPct(pnlPct)})</div></div></div>`;
-  }).join('');
-  const totalPnl = totalValue - totalCost;
-  document.getElementById('totalCost').textContent = fmt(totalCost);
-  document.getElementById('totalValue').textContent = fmt(totalValue);
-  document.getElementById('totalPnl').textContent = (totalPnl >= 0 ? '+' : '') + fmt(totalPnl);
-  document.getElementById('totalPnl').className = 'stat-value ' + (totalPnl >= 0 ? 'green' : 'red');
+    totalValue += value;
+    if (h.buyPrice) {
+      const cost = h.buyPrice * h.shares;
+      knownCost += cost;
+      totalPnl += (value - cost);
+    }
+    groups[h.group].items.push(h);
+  });
+
+  // 渲染 HTML
+  let html = '';
+
+  Object.entries(groups).forEach(([key, group]) => {
+    if (group.items.length === 0) return;
+    html += `
+      <div class="group-header">
+        <span class="group-name">${group.name}</span>
+        <span class="group-tag ${group.tag}">${group.items.length} 只</span>
+      </div>`;
+    group.items.forEach(h => {
+      const value = h.currentPrice * h.shares;
+      const cost = h.buyPrice ? h.buyPrice * h.shares : null;
+      const pnl = cost ? value - cost : null;
+      const pnlPct = cost ? (pnl / cost) * 100 : null;
+      const c = pnl === null ? 'gray' : (pnl >= 0 ? 'green' : 'red');
+      const badgeHtml = h.badge === 'winner'
+        ? '<span class="h-badge badge-winner">🔥 大赢家</span>'
+        : '';
+      const pnlText = pnl === null
+        ? '<span style="color:#888;">成本未知</span>'
+        : `${pnl >= 0 ? '+' : ''}${fmt(pnl)} (${fmtPct(pnlPct)})`;
+      const costText = h.buyPrice
+        ? `${h.shares} 股 × ${fmt(h.buyPrice)} = ${fmtK(h.shares * h.buyPrice)}`
+        : `${h.shares} 股(成本未填)`;
+
+      html += `
+        <div class="holding-mini">
+          <div class="h-left">
+            <div class="h-ticker-row">
+              <div class="h-ticker">${h.ticker}</div>
+              ${badgeHtml}
+            </div>
+            <div class="h-shares">${costText} · ${escapeHtml(h.tag || '')}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="h-price ${c}">${fmt(value)}</div>
+            <div class="h-pnl ${c}">${pnlText}</div>
+          </div>
+        </div>`;
+    });
+  });
+
+  // AMZN 锁仓单独显示
+  html += `
+    <div class="group-header">
+      <span class="group-name">锁仓资产</span>
+      <span class="group-tag tag-locked">不操作</span>
+    </div>
+    <div class="holding-mini">
+      <div class="h-left">
+        <div class="h-ticker-row">
+          <div class="h-ticker">${lockedHolding.ticker}</div>
+          <span class="h-badge badge-locked">🔒 锁仓</span>
+        </div>
+        <div class="h-shares">${escapeHtml(lockedHolding.note)}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="h-price gray">${fmt(lockedHolding.value)}</div>
+        <div class="h-pnl gray">独立账户</div>
+      </div>
+    </div>`;
+
+  document.getElementById('holdingsMini').innerHTML = html;
+
+  // 总览数据
+  const cash = 1000000 - totalValue;
+  document.getElementById('totalValue').textContent = fmtK(totalValue);
+  document.getElementById('totalCash').textContent = fmtK(cash);
+  const pnlEl = document.getElementById('totalPnl');
+  pnlEl.textContent = (totalPnl >= 0 ? '+' : '') + fmtK(totalPnl) + '*';
+  pnlEl.className = 'stat-value ' + (totalPnl >= 0 ? 'green' : 'red');
+  pnlEl.title = '*仅计算成本已知的标的';
 }
 
+// ============= 新闻获取 =============
 async function fetchFromMarketaux(category, params, apiKey) {
   const recentDate = getRecentDate();
   let url = `https://api.marketaux.com/v1/news/all?language=en&limit=3&sort=published_desc&published_after=${recentDate}&api_token=${apiKey}`;
@@ -361,7 +553,6 @@ async function fetchFromGNews(category, query, apiKey) {
   }));
 }
 
-// === v12: HackerNews 每次拿 10 条 ===
 async function fetchFromHN(query) {
   const cutoff = getRecentTimestamp();
   const url = `https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(query)}&tags=story&numericFilters=created_at_i>${cutoff}&hitsPerPage=10`;
@@ -454,7 +645,7 @@ async function fetchAllNews() {
     }
   }
 
-  // === HackerNews(8 个搜索)===
+  // === HackerNews ===
   showStatus('正在获取 HackerNews 极客讨论...', 'info');
   let hnArticles = [];
   for (let i = 0; i < hnQueries.length; i++) {
@@ -524,7 +715,8 @@ function categoryLabel(c) {
 function translateNews(id) {
   const n = news.find(x => String(x.id) === String(id));
   if (!n) return;
-  const prompt = `请帮我处理这条英文资讯:\n\n标题:${n.title}\n${n.description ? '\n摘要:' + n.description : ''}\n来源:${n.source} · 分类:${categoryLabel(n.category)}\n\n请给我:\n1. 中文标题\n2. 3 个核心要点\n3. 对我投资组合(AMD/ARM/TSM)或国际局势的影响`;
+  const tickers = holdings.map(h => h.ticker).join('/') + '/AMZN';
+  const prompt = `请帮我处理这条英文资讯:\n\n标题:${n.title}\n${n.description ? '\n摘要:' + n.description : ''}\n来源:${n.source} · 分类:${categoryLabel(n.category)}\n\n请给我:\n1. 中文标题\n2. 3 个核心要点\n3. 对我投资组合(${tickers})或国际局势的影响`;
   navigator.clipboard.writeText(prompt).then(() => {
     showToast('✅ 已复制!回 Claude 黏贴即可');
   }).catch(() => alert('复制失败,请手动复制:\n\n' + prompt));
