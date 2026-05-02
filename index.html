@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>我的资讯驾驶舱</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,16 +38,14 @@
   .tag-ai { background: #e9d5ff; color: #6b21a8; }
   .tag-legacy { background: #dbeafe; color: #1e40af; }
   .tag-other { background: #fef3c7; color: #92400e; }
-  .tag-locked { background: #fee2e2; color: #991b1b; }
 
   .holding-mini { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
   .holding-mini:last-child { border-bottom: none; }
   .h-left { flex: 1; min-width: 0; }
-  .h-ticker-row { display: flex; align-items: center; gap: 6px; }
+  .h-ticker-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .h-ticker { font-weight: 600; font-size: 15px; }
   .h-badge { font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
   .badge-winner { background: #d1fae5; color: #065f46; }
-  .badge-locked { background: #fee2e2; color: #991b1b; }
   .h-shares { font-size: 11px; color: #888; margin-top: 2px; }
   .h-price { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
   .h-pnl { font-size: 11px; margin-top: 2px; font-variant-numeric: tabular-nums; }
@@ -103,36 +102,21 @@
   .status-msg.info { background: #dbeafe; color: #1e40af; }
   .status-msg.warn { background: #fef3c7; color: #92400e; }
   .diagnostic { font-size: 11px; font-family: monospace; background: #1f2937; color: #d1fae5; padding: 10px; border-radius: 6px; margin-top: 8px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
-
-  /* Total assets */
-  .total-assets { background: linear-gradient(135deg, #1e293b, #334155); color: white; padding: 14px; border-radius: 10px; margin-bottom: 12px; }
-  .total-assets .label { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
-  .total-assets .value { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
-  .total-assets .breakdown { font-size: 11px; opacity: 0.8; margin-top: 6px; line-height: 1.5; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>我的资讯驾驶舱<span class="version-tag">v13 真实持仓</span></h1>
-  <div class="subtitle">$3.5M 总资产 · 自管 $1M · AI 革命押注者</div>
+  <h1>我的资讯驾驶舱<span class="version-tag">v13</span></h1>
+  <div class="subtitle">AI 革命押注者 · 持仓追踪 · 新闻分析</div>
 
-  <!-- 总资产卡 -->
+  <!-- 持仓卡(无金额) -->
   <div class="card">
-    <div class="total-assets">
-      <div class="label">总资产</div>
-      <div class="value">$3,500,000</div>
-      <div class="breakdown">
-        股票 $2.2M(自管 $1M + AMZN 锁仓 $1.2M)<br>
-        其他资产 $1.3M
-      </div>
-    </div>
-
-    <div class="section-title" style="margin-top: 18px;">💼 自管账户持仓($1M)</div>
+    <div class="section-title">💼 持仓总览</div>
 
     <div class="summary-grid">
-      <div><div class="stat-label">已部署</div><div class="stat-value" id="totalValue">$0</div></div>
-      <div><div class="stat-label">总盈亏</div><div class="stat-value" id="totalPnl">$0</div></div>
-      <div><div class="stat-label">现金</div><div class="stat-value" id="totalCash">$0</div></div>
+      <div><div class="stat-label">浮盈%</div><div class="stat-value" id="totalPnlPct">--</div></div>
+      <div><div class="stat-label">持仓数</div><div class="stat-value" id="totalCount">0</div></div>
+      <div><div class="stat-label">赢家</div><div class="stat-value" id="winnerCount">0</div></div>
     </div>
 
     <div id="holdingsMini" style="margin-top: 14px;"></div>
@@ -193,30 +177,30 @@
 
 <script>
 // ========================================
-// v13 真实持仓配置
-// 数据来源:用户告诉 Claude 的真实仓位
+// v13 真实持仓配置(隐私安全版)
+// 不显示绝对金额,只显示百分比
 // ========================================
 
 const holdings = [
   // === AI 革命押注 ===
   {
     ticker: 'TSLA', name: 'Tesla',
-    shares: 299, buyPrice: null,  // 成本未知
+    shares: 299, buyPrice: null,
     currentPrice: 378.81,
-    group: 'ai', tag: 'AI 物理化身'
+    group: 'ai', tag: '物理化身'
   },
   {
     ticker: 'INTC', name: 'Intel',
     shares: 1000, buyPrice: 20,
     currentPrice: 98.52,
     group: 'ai', tag: 'CPU 转型',
-    badge: 'winner'  // 标记为赢家
+    badge: 'winner'
   },
   {
     ticker: 'ARM', name: 'ARM Holdings',
     shares: 440, buyPrice: 220,
     currentPrice: 213.89,
-    group: 'ai', tag: 'CPU IP + 省电'
+    group: 'ai', tag: 'IP + 省电'
   },
   {
     ticker: 'AMD', name: 'AMD',
@@ -228,13 +212,19 @@ const holdings = [
     ticker: 'GOOG', name: 'Alphabet',
     shares: 60, buyPrice: null,
     currentPrice: 381.24,
-    group: 'ai', tag: 'AI 巨头'
+    group: 'ai', tag: 'AI 全栈'
   },
   {
     ticker: 'NVDA', name: 'NVIDIA',
     shares: 30, buyPrice: null,
     currentPrice: 199.57,
     group: 'ai', tag: 'GPU 王者'
+  },
+  {
+    ticker: 'ADBE', name: 'Adobe',
+    shares: 50, buyPrice: null,
+    currentPrice: 241.28,
+    group: 'ai', tag: 'SaaS 反转'
   },
 
   // === 传统科技 ===
@@ -254,13 +244,6 @@ const holdings = [
   }
 ];
 
-// AMZN 锁仓(单独显示,不算入自管账户)
-const lockedHolding = {
-  ticker: 'AMZN', name: 'Amazon',
-  value: 1200000,
-  note: 'AI 受益(被动)'
-};
-
 let news = [];
 let currentFilter = 'all';
 let lastFetchTime = null;
@@ -277,14 +260,14 @@ function getRecentTimestamp(daysAgo = DAYS_BACK) {
   return Math.floor((Date.now() - daysAgo * 86400000) / 1000);
 }
 
-// === 新闻搜索关键词(基于真实持仓更新)===
+// === 新闻搜索关键词(基于真实持仓)===
 const marketauxQueries = {
   portfolio: [
     { symbols: 'AMD,ARM,INTC,NVDA' },
-    { symbols: 'TSLA,GOOG,AMZN' }
+    { symbols: 'TSLA,GOOG,AMZN,ADBE' }
   ],
   oil: [{ search: 'oil OR OPEC' }],
-  war: [{ search: 'Ukraine OR Israel OR conflict' }],
+  war: [{ search: 'Ukraine OR Israel OR conflict OR Pentagon' }],
   ai: [
     { search: 'OpenAI OR Anthropic OR ChatGPT OR Claude' },
     { search: '"AI agent" OR Gemini OR Llama' },
@@ -295,10 +278,10 @@ const marketauxQueries = {
 const gnewsQueries = {
   portfolio: [
     'AMD OR ARM OR Intel OR NVIDIA',
-    'Tesla OR Google OR Amazon'
+    'Tesla OR Google OR Amazon OR Adobe'
   ],
   oil: ['oil OPEC'],
-  war: ['Ukraine Israel'],
+  war: ['Ukraine Israel Pentagon'],
   ai: [
     'OpenAI Anthropic',
     'AI agent Gemini',
@@ -317,9 +300,8 @@ const hnQueries = [
   'agent OR agentic OR datacenter'
 ];
 
-// ============= Helper Functions =============
+// ============= Helpers =============
 function fmt(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function fmtK(n) { return '$' + (n / 1000).toFixed(1) + 'k'; }
 function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
 function timeAgo(ts) {
   const diff = Date.now() - ts;
@@ -412,11 +394,11 @@ function saveKey(type) {
   setTimeout(() => document.getElementById('statusMsg').innerHTML = '', 3000);
 }
 
-// ============= 持仓渲染 =============
+// ============= 持仓渲染(隐私版,无金额)=============
 function renderHoldings() {
-  let totalValue = 0;
   let totalPnl = 0;
-  let knownCost = 0;
+  let totalCost = 0;
+  let winnerCount = 0;
 
   // 按组分组
   const groups = {
@@ -426,17 +408,16 @@ function renderHoldings() {
   };
 
   holdings.forEach(h => {
-    const value = h.currentPrice * h.shares;
-    totalValue += value;
     if (h.buyPrice) {
+      const value = h.currentPrice * h.shares;
       const cost = h.buyPrice * h.shares;
-      knownCost += cost;
+      totalCost += cost;
       totalPnl += (value - cost);
+      if (value > cost) winnerCount++;
     }
     groups[h.group].items.push(h);
   });
 
-  // 渲染 HTML
   let html = '';
 
   Object.entries(groups).forEach(([key, group]) => {
@@ -447,20 +428,18 @@ function renderHoldings() {
         <span class="group-tag ${group.tag}">${group.items.length} 只</span>
       </div>`;
     group.items.forEach(h => {
-      const value = h.currentPrice * h.shares;
-      const cost = h.buyPrice ? h.buyPrice * h.shares : null;
-      const pnl = cost ? value - cost : null;
-      const pnlPct = cost ? (pnl / cost) * 100 : null;
-      const c = pnl === null ? 'gray' : (pnl >= 0 ? 'green' : 'red');
+      const cost = h.buyPrice;
+      const pnlPct = cost ? ((h.currentPrice - cost) / cost) * 100 : null;
+      const c = pnlPct === null ? 'gray' : (pnlPct >= 0 ? 'green' : 'red');
       const badgeHtml = h.badge === 'winner'
         ? '<span class="h-badge badge-winner">🔥 大赢家</span>'
         : '';
-      const pnlText = pnl === null
-        ? '<span style="color:#888;">成本未知</span>'
-        : `${pnl >= 0 ? '+' : ''}${fmt(pnl)} (${fmtPct(pnlPct)})`;
-      const costText = h.buyPrice
-        ? `${h.shares} 股 × ${fmt(h.buyPrice)} = ${fmtK(h.shares * h.buyPrice)}`
-        : `${h.shares} 股(成本未填)`;
+      const pnlText = pnlPct === null
+        ? '<span style="color:#888;">--</span>'
+        : fmtPct(pnlPct);
+      const costText = cost
+        ? `${h.shares} 股 · 成本 ${fmt(cost)}`
+        : `${h.shares} 股 · 成本未填`;
 
       html += `
         <div class="holding-mini">
@@ -472,43 +451,27 @@ function renderHoldings() {
             <div class="h-shares">${costText} · ${escapeHtml(h.tag || '')}</div>
           </div>
           <div style="text-align:right;">
-            <div class="h-price ${c}">${fmt(value)}</div>
+            <div class="h-price ${c}">${fmt(h.currentPrice)}</div>
             <div class="h-pnl ${c}">${pnlText}</div>
           </div>
         </div>`;
     });
   });
 
-  // AMZN 锁仓单独显示
-  html += `
-    <div class="group-header">
-      <span class="group-name">锁仓资产</span>
-      <span class="group-tag tag-locked">不操作</span>
-    </div>
-    <div class="holding-mini">
-      <div class="h-left">
-        <div class="h-ticker-row">
-          <div class="h-ticker">${lockedHolding.ticker}</div>
-          <span class="h-badge badge-locked">🔒 锁仓</span>
-        </div>
-        <div class="h-shares">${escapeHtml(lockedHolding.note)}</div>
-      </div>
-      <div style="text-align:right;">
-        <div class="h-price gray">${fmt(lockedHolding.value)}</div>
-        <div class="h-pnl gray">独立账户</div>
-      </div>
-    </div>`;
-
   document.getElementById('holdingsMini').innerHTML = html;
 
-  // 总览数据
-  const cash = 1000000 - totalValue;
-  document.getElementById('totalValue').textContent = fmtK(totalValue);
-  document.getElementById('totalCash').textContent = fmtK(cash);
-  const pnlEl = document.getElementById('totalPnl');
-  pnlEl.textContent = (totalPnl >= 0 ? '+' : '') + fmtK(totalPnl) + '*';
-  pnlEl.className = 'stat-value ' + (totalPnl >= 0 ? 'green' : 'red');
-  pnlEl.title = '*仅计算成本已知的标的';
+  // 总览数据(只显示百分比和数量)
+  document.getElementById('totalCount').textContent = holdings.length;
+  document.getElementById('winnerCount').textContent = winnerCount;
+
+  if (totalCost > 0) {
+    const totalPnlPct = (totalPnl / totalCost) * 100;
+    const pnlPctEl = document.getElementById('totalPnlPct');
+    pnlPctEl.textContent = fmtPct(totalPnlPct);
+    pnlPctEl.className = 'stat-value ' + (totalPnl >= 0 ? 'green' : 'red');
+  } else {
+    document.getElementById('totalPnlPct').textContent = '--';
+  }
 }
 
 // ============= 新闻获取 =============
